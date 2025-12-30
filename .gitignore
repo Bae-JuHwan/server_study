@@ -1,0 +1,13 @@
+# Visual Studio 임시 파일 및 캐시
+.vs/
+ipch/
+*.ipch
+
+# 빌드 결과물 및 프리컴파일드 헤더
+Debug/
+Release/
+x64/
+*.pch
+*.obj
+*.exe
+*.pdb
