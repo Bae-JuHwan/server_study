@@ -1,0 +1,3 @@
+Binary와 Libraries 파일을 따로 만들어서 Binary파일에는 exe파일을, Libraries 파일에는 lib파일을 넣어서 다른 프로젝트에서도 열 수 있게 연결해놓는 작업을 했다. 
+
+연결방법은 속성에서 vc++ 디렉터리 -> 포함 디렉터리, 라이브러리 디렉터리의 위치를 binary, libraries로 바꾸면 된다.
