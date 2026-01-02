@@ -2,31 +2,44 @@
 #include <iostream>
 #include "CorePch.h"
 #include <thread>
+#include <atomic>
+#include <mutex>
+#include "AccountManager.h"
+#include "UserManager.h"
 
-void HelloThread()
+void Fun1()
 {
-	cout << "Hello Thread" << endl;
+	for (int32 i = 0; i < 1000; i++)
+	{
+		UserManager::Instance()->ProcessSave();
+	}
 }
 
-void HelloThread_2(int32 num)
+void Fun2()
 {
-	cout << num << endl;
+	for (int32 i = 0; i < 1000; i++)
+	{
+		AccountManager::Instance()->ProcessLogin();
+	}
 }
 
 int main()
-{
-	vector<std::thread> v;
+{	
+	std::thread t1(Fun1);
+	std::thread t2(Fun2);
 
-	for (int32 i = 0; i < 10; i++)
-	{
-		v.push_back(std::thread(HelloThread_2, i));
-	}
+	t1.join();
+	t2.join();
 
-	for (int32 i = 0; i < 10; i++)
-	{
-		if (v[i].joinable())
-			v[i].join();
-	}
+	cout << "Jobs Done" << endl;
 
-	cout << "Hello Main" << endl;
+	// 참고
+	mutex m1;
+	mutex m2;
+
+	std::lock(m1, m2);
+
+	// adopt lock : 이미 lock된 상태니까, 나중에 소멸될때 풀어주기만 해
+	lock_guard<mutex> g1(m1, std::adopt_lock);
+	lock_guard<mutex> g2(m2, std::adopt_lock);
 }
