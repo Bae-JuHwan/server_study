@@ -1,0 +1,8 @@
+event는 난 소중하니 직원한테 부탁하는 갑질 메타이다. lock과 더불어서 event를 이용해서 thread를 동기화하는 방법이 종종 활용된다. 
+
+auto reset event와 manual reset event로 나눌 수 있는데 event에 어떤 인자를 주느냐에 따라서 달라질 수 있다. 
+auto reset event는 문이 자동으로 잠기는 것이고, manual reset event는 문이 수동으로 잠기는 것이다. 
+
+event는 쉽게 말해서 boolean값이라고 생각하면 된다. 
+
+event는 커널 레벨까지 사용하기 때문에 너무 빈번하게 일어나거나 너무 간단한 함수에서는 좋지 않다.
