@@ -8,30 +8,66 @@
 #include "CoreMacro.h"
 #include "ThreadManager.h"
 
-#include "AccountManager.h"
-#include "PlayerManager.h"
+#include <vector>
+
+// 소수 구하기
+
+// 1과 자기 자신으로만 나뉘면 소수
+bool IsPrime(int number)
+{
+	if (number <= 1)
+		return false;
+	if (number == 2 || number == 3)
+		return true;
+
+	for (int i = 2; i < number; i++)
+	{
+		if ((number % i) == 0)
+			return false;
+	}
+
+	return true;
+}
+
+// [start ~ end]
+int CountPrime(int start, int end)
+{
+	int count = 0;
+
+	for (int number = start; number <= end; number++)
+	{
+		if (IsPrime(number))
+			count++;
+	}
+
+	return count;
+}
 
 int main()
 {
-	GThreadManager->Launch([=]
-		{
-			while (true)
-			{
-				cout << "PlayerThenAccount" << endl;
-				GPlayerManager.PlayerThenAccount();
-				this_thread::sleep_for(100ms);
-			}
-		});
+	const int MAX_NUMBER = 100'0000;
+	// 1~MAX_NUMBER까지의 소수 개수
 
-	GThreadManager->Launch([=]
-		{
-			while (true)
-			{
-				cout << "AccountThenPlayer" << endl;
-				GAccountManager.AccountThenPlayer();
-				this_thread::sleep_for(100ms);
-			}
-		});
+	vector<thread> threads;
 
-	GThreadManager->Join();
+	int coreCount = thread::hardware_concurrency();
+	int jobCount = (MAX_NUMBER / coreCount) + 1;
+
+	atomic<int> primeCount = 0;
+
+	for (int i = 0; i < coreCount; i++)
+	{
+		int start = (i * jobCount) + 1;
+		int end = min(MAX_NUMBER, ((i + 1) * jobCount));
+
+		threads.push_back(thread([start, end, &primeCount]()
+			{
+				primeCount += CountPrime(start, end);
+			}));
+	}
+
+	for (thread& t : threads)
+		t.join();
+
+	cout << primeCount << endl;	
 }
