@@ -31,4 +31,3 @@ private:
 	vector<bool>	_finished;			// DFS(i)가 종료 되었는지 여부
 	vector<int32>	_parent;
 };
-

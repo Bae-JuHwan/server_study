@@ -39,7 +39,7 @@ private:
 /*------------------
 	LockGuards
 ------------------*/
-
+	
 class ReadLockGuard
 {
 public:
