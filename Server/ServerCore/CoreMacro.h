@@ -18,10 +18,10 @@
 ----------------------*/
 
 #ifdef _DEBUG
-#define Xalloc(size)		StompAllocator::Alloc(size)
-#define xrelease(ptr)		StompAllocator::Release(ptr)
+#define Xalloc(size)		PoolAllocator::Alloc(size)
+#define xrelease(ptr)		PoolAllocator::Release(ptr)
 #else
-#define xalloc(size)		BaseAllocator::Alloc(size)
+#define Xalloc(size)		BaseAllocator::Alloc(size)
 #define xrelease(ptr)		BaseAllocator::Release(ptr)
 #endif
 
@@ -34,7 +34,7 @@
 	uint32* crash = nullptr;				\
 	__analysis_assume(crash != nullptr);	\
 	*crash = 0xDEADBEEF;					\
-}											\
+}											
 
 #define ASSERT_CRASH(expr)					\
 {											\
@@ -43,4 +43,4 @@
 		CRASH("ASSERT_CRASH");				\
 		__analysis_assume(expr);			\
 	}										\
-}											\
+}											
