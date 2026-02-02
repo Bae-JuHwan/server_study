@@ -14,18 +14,6 @@
 #define WRITE_LOCK				WRITE_LOCK_IDX(0)
 
 /*----------------------
-		Memory
-----------------------*/
-
-#ifdef _DEBUG
-#define Xalloc(size)		PoolAllocator::Alloc(size)
-#define xrelease(ptr)		PoolAllocator::Release(ptr)
-#else
-#define Xalloc(size)		BaseAllocator::Alloc(size)
-#define xrelease(ptr)		BaseAllocator::Release(ptr)
-#endif
-
-/*----------------------
         Crash
 ----------------------*/
 
