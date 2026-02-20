@@ -3,9 +3,9 @@
 #include "SocketUtils.h"
 #include "Service.h"
 
-/*----------------
-	 Session
-----------------*/
+/*--------------
+	Session
+---------------*/
 
 Session::Session()
 {
@@ -39,7 +39,7 @@ bool Session::Connect()
 }
 
 void Session::Disconnect(const WCHAR* cause)
-{	
+{
 	if (_connected.exchange(false) == false)
 		return;
 
@@ -93,7 +93,7 @@ bool Session::RegisterConnect()
 		return false;
 
 	_connectEvent.Init();
-	_connectEvent.owner = shared_from_this();	// ADD_REF
+	_connectEvent.owner = shared_from_this(); // ADD_REF
 
 	DWORD numOfBytes = 0;
 	SOCKADDR_IN sockAddr = GetService()->GetNetAddress().GetSockAddr();
@@ -102,7 +102,7 @@ bool Session::RegisterConnect()
 		int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
 		{
-			_connectEvent.owner = nullptr;	// RELEASE_REF
+			_connectEvent.owner = nullptr; // RELEASE_REF
 			return false;
 		}
 	}
@@ -113,14 +113,14 @@ bool Session::RegisterConnect()
 bool Session::RegisterDisconnect()
 {
 	_disconnectEvent.Init();
-	_disconnectEvent.owner = shared_from_this();	// ADD_REF
+	_disconnectEvent.owner = shared_from_this(); // ADD_REF
 
 	if (false == SocketUtils::DisconnectEx(_socket, &_disconnectEvent, TF_REUSE_SOCKET, 0))
 	{
 		int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
 		{
-			_disconnectEvent.owner = nullptr;	// RELEASE_REF
+			_disconnectEvent.owner = nullptr; // RELEASE_REF
 			return false;
 		}
 	}
@@ -134,7 +134,7 @@ void Session::RegisterRecv()
 		return;
 
 	_recvEvent.Init();
-	_recvEvent.owner = shared_from_this();	// ADD_REF
+	_recvEvent.owner = shared_from_this(); // ADD_REF
 
 	WSABUF wsaBuf;
 	wsaBuf.buf = reinterpret_cast<char*>(_recvBuffer);
@@ -142,7 +142,6 @@ void Session::RegisterRecv()
 
 	DWORD numOfBytes = 0;
 	DWORD flags = 0;
-
 	if (SOCKET_ERROR == ::WSARecv(_socket, &wsaBuf, 1, OUT &numOfBytes, OUT &flags, &_recvEvent, nullptr))
 	{
 		int32 errorCode = ::WSAGetLastError();
@@ -170,7 +169,7 @@ void Session::RegisterSend(SendEvent* sendEvent)
 		if (errorCode != WSA_IO_PENDING)
 		{
 			HandleError(errorCode);
-			sendEvent->owner = nullptr;	// RELEASE_REF
+			sendEvent->owner = nullptr; // RELEASE_REF
 			xdelete(sendEvent);
 		}
 	}
@@ -178,7 +177,7 @@ void Session::RegisterSend(SendEvent* sendEvent)
 
 void Session::ProcessConnect()
 {
-	_connectEvent.owner = nullptr;	// RELEASE_REF
+	_connectEvent.owner = nullptr; // RELEASE_REF
 
 	_connected.store(true);
 
@@ -194,7 +193,7 @@ void Session::ProcessConnect()
 
 void Session::ProcessDisconnect()
 {
-	_disconnectEvent.owner = nullptr;	// RELEASE_REF
+	_disconnectEvent.owner = nullptr; // RELEASE_REF
 }
 
 void Session::ProcessRecv(int32 numOfBytes)
@@ -216,7 +215,7 @@ void Session::ProcessRecv(int32 numOfBytes)
 
 void Session::ProcessSend(SendEvent* sendEvent, int32 numOfBytes)
 {
-	sendEvent->owner = nullptr;	// RELEASE_REF
+	sendEvent->owner = nullptr; // RELEASE_REF
 	xdelete(sendEvent);
 
 	if (numOfBytes == 0)
@@ -229,7 +228,7 @@ void Session::ProcessSend(SendEvent* sendEvent, int32 numOfBytes)
 	OnSend(numOfBytes);
 }
 
-void Session::HandleError(int32 errorCode)	
+void Session::HandleError(int32 errorCode)
 {
 	switch (errorCode)
 	{

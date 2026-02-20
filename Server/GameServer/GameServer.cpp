@@ -20,7 +20,7 @@ public:
 	}
 
 	virtual void OnSend(int32 len) override
-	{
+	{ 
 		cout << "OnSend Len = " << len << endl;
 	}
 };
@@ -28,9 +28,9 @@ public:
 int main()
 {
 	ServerServiceRef service = MakeShared<ServerService>(
-		NetAddress(L"127.0.0.1", 7777), 
+		NetAddress(L"127.0.0.1", 7777),
 		MakeShared<IocpCore>(),
-		MakeShared<GameSession>,	// TODO : SessionManager 등
+		MakeShared<GameSession>, // TODO : SessionManager 등
 		100);
 
 	ASSERT_CRASH(service->Start());
@@ -42,9 +42,9 @@ int main()
 				while (true)
 				{
 					service->GetIocpCore()->Dispatch();
-				}
+				}				
 			});
-	}
+	}	
 
 	GThreadManager->Join();
 }
