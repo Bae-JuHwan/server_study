@@ -1,7 +1,7 @@
 syntax = "proto3";
 package Protocol;
 
-enum PlayerType 
+enum PlayerType
 {
 	PLAYER_TYPE_NONE = 0;
 	PLAYER_TYPE_KNIGHT = 1;
